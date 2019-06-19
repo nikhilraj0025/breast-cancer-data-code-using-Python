@@ -1,0 +1,51 @@
+import pandas as pd
+bc=pd.read_csv(r"C:\Users\AKHIL\Desktop\R csv\bcan.csv")
+print(bc.head())
+bc.shape
+bc= bc.iloc[:,2:]
+bc.head()
+
+################################## one hot encoding #######################################################################
+
+bc.Class.replace({"benign":0,"malignant":1},inplace=True)
+bc.Class=bc.Class.astype('category')
+bc.head()
+bc.tail()
+
+bc=bc.dropna()
+bc.shape
+
+###############################################################################################################################
+
+bc_x=bc.iloc[:,0:9] ############### storing the independent variable in x ###############
+bc_x.head()
+bc_y=bc.iloc[:,-1]################ storing dependent variable in y #####################
+bc_x.head()
+bc_y.head()
+
+############################################## SPLITTING TO TRAIN AND TEST ##############################################
+
+import sklearn
+from sklearn.model_selection import train_test_split
+bc_x_train,bc_x_test,bc_y_train,bc_y_test=train_test_split(bc_x,bc_y,test_size=.2,random_state=101)
+print(bc_x_train.shape)###### checking no of rows in test and train are same ####
+print(bc_y_train.shape)
+print(bc_x_test.shape)
+print(bc_y_test.shape)
+
+from sklearn.tree import DecisionTreeClassifier
+dtree1=DecisionTreeClassifier(min_samples_split=100)
+dtree1.fit(bc_x_train,bc_y_train)
+pred_value11=dtree1.predict(bc_x_test)
+
+from sklearn.metrics import confusion_matrix
+com = confusion_matrix(pred_value11,bc_y_test)
+com
+
+tab11=confusion_matrix(pred_value11,bc_y_test)
+tab11
+
+accuracy=sum(tab11.diagonal())/tab11.sum()################  to get the accuracy  ######################## 
+print("accuracy of the model is ::",accuracy)
+
+dtree1.feature_importances_ 
